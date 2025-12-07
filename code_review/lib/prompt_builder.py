@@ -12,7 +12,7 @@ class PromptBuilder:
         self.level = level
 
     def get_prompt(self, payload):
-        return f"""SYSTEM: Ты — опытный senior-инженер, делающий code review в продакшн-проекте.
+        return """SYSTEM: Ты — опытный senior-инженер, делающий code review в продакшн-проекте.
         Тебе передан git diff с изменениями в коде. 
         Твоя задача — помочь автору изменений:
         - найти логические ошибки, потенциальные баги и опасные corner cases;
@@ -51,6 +51,4 @@ class PromptBuilder:
         
         Ниже diff, который нужно проанализировать:
         
-        === BEGIN DIFF ===
-        {payload}
-        === END DIFF ==="""
+        === BEGIN DIFF ===\n""" + payload + "\n=== END DIFF ==="

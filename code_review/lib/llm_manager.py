@@ -10,7 +10,7 @@ class LLMAPIManager:
         self.model_id = nodel_id
 
     def get_response(self, prompt):
-        for attempt in range(1, 4):
+        for attempt in range(1, 6):
             # TODO: системные сообщения к модели user/tool/dev/system
             response = requests.post(
                 "https://openrouter.ai/api/v1/chat/completions",
@@ -55,7 +55,7 @@ class LLMAPIManager:
                 f"Ошибка: {e}"
                 f"JSON: {content}"
 
-                if attempt == 3:
+                if attempt == 5:
                     raise RuntimeError(
                         f"Максимальное число попыток превышено, попыток было {attempt}"
                     )
