@@ -74,7 +74,7 @@ class GitLabAdapter(CommonAdapter):
         resp = requests.post(
             self._notes_url,
             headers=self._headers,
-            json=json.dumps(payload),
+            data=json.dumps(payload),
         )
 
         if resp.status_code not in (200, 201):
