@@ -21,7 +21,7 @@ class ReviewOrchestrator:
 
         response = self.llm.get_response(prompt)
 
-        for comment in response["comments"]:
+        for comment in response.get("comments", []):
             self.adapter.post_comment(comment)
 
         self.adapter.post_summary(response["summary"])
