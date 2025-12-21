@@ -25,7 +25,7 @@ class GitLabAdapter(CommonAdapter):
         token = context["token"]
         base_url = context["ci_server_url"].rstrip("/")
 
-        self._headers = {"PRIVATE-TOKEN": token}
+        self._headers = {"PRIVATE-TOKEN": token, "Content-Type": "application/json"}
         changes_url = (
             f"{base_url}/api/v4/projects/{project_id}/merge_requests/{mr_iid}/changes"
         )
@@ -74,7 +74,7 @@ class GitLabAdapter(CommonAdapter):
         resp = requests.post(
             self._notes_url,
             headers=self._headers,
-            data=json.dumps(payload),
+            json=json.dumps(payload),
         )
 
         if resp.status_code not in (200, 201):
