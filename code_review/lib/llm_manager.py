@@ -37,10 +37,11 @@ class LLMAPIManager:
             try:
                 return json.loads(content)
             except json.JSONDecodeError as e:
-                print(f"[WARN] Попытка {attempt}: модель вернула невалидный JSON, пробуем снова...")
+                print(f"[WARN] Попытка {attempt}: модель вернула невалидный JSON, пробуем снова")
+                print(f"Content={content}")
                 time.sleep(1)
 
-                prompt = "Исправь некорректный возвращенный json, json должен быть в формате"
+                prompt = "Исправь некорректный возвращенный json, json должен быть строго в формате"
                 "{\n"
                 "  \"comments\": [\n"
                 "    {\n"
