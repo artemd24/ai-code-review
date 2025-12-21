@@ -55,6 +55,8 @@ class GitLabAdapter(CommonAdapter):
 
     def post_comment(self, comment) -> None:
         # Markdown формат комментария
+        print(f"Comment={comment}")
+
         body = f"### 💬 Code Review\n{comment['comment']}"
         if "suggestion" in comment and comment["suggestion"]:
             body += f"\n\n```diff\n{comment['suggestion']}\n```"
