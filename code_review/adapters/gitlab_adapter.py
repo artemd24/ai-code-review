@@ -37,11 +37,14 @@ class GitLabAdapter(CommonAdapter):
         return "\n".join(diffs)
 
     def post_comment(self, comment: str) -> None:
-        requests.post(
+        resp = requests.post(
             self._notes_url,
             headers=self._headers,
             json={"body": comment},
         )
+
+        if resp.status_code not in (200, 201):
+            raise RuntimeError(f"GitLab comment error: {resp.status_code} {resp.text}")
 
     def post_summary(self, summary: str) -> None:
         self.post_comment(f"## Summary\n\n{summary}")
