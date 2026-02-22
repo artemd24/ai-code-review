@@ -37,6 +37,8 @@ def build_context(adapter_type: str, args) -> dict:
         }
 
     if adapter_type == "github":
+        if not (hasattr(args, 'repo') and args.repo and hasattr(args, 'pr') and args.pr):
+            raise ValueError("Для GitHub укажите --repo и --pr")
         return {
             "repo": args.repo,
             "pr_number": args.pr,
