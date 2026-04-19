@@ -2,6 +2,7 @@ from code_review.adapters.github_adapter import GitHubAdapter
 from code_review.adapters.gitlab_adapter import GitLabAdapter
 from code_review.adapters.local_adapter import LocalAdapter
 from code_review.cli import parse_args
+from code_review.lib.diff_splitter import default_max_diff_tokens
 from code_review.lib.llm_manager import LLMAPIManager
 from code_review.lib.prompt_builder import PromptBuilder, PromptAdvancementLevel
 from code_review.lib.supperted_models import SupportedModel
@@ -37,8 +38,13 @@ def build_context(adapter_type: str, args) -> dict:
         }
 
     if adapter_type == "github":
-        if not (hasattr(args, 'repo') and args.repo and hasattr(args, 'pr') and args.pr):
+        if not (hasattr(args, "repo") and args.repo and hasattr(args, "pr") and args.pr):
             raise ValueError("Для GitHub укажите --repo и --pr")
+        if not getattr(args, "token", None):
+            raise ValueError(
+                "Для GitHub нужен токен с доступом к репозиторию (например repo). "
+                "Укажите --token или положите его в конфиг."
+            )
         return {
             "repo": args.repo,
             "pr_number": args.pr,
@@ -56,6 +62,10 @@ def main():
 
     model = SupportedModel(args.model)
 
+    max_diff_tokens = args.max_diff_tokens
+    if max_diff_tokens is None:
+        max_diff_tokens = default_max_diff_tokens(model.context_window_tokens)
+
     llm = LLMAPIManager(
         api_key=args.api_key,
         nodel_id=model.openrouter_id,
@@ -69,6 +79,7 @@ def main():
         adapter=adapter,
         llm_manager=llm,
         prompt_builder=prompt_builder,
+        max_diff_tokens=max_diff_tokens,
     )
 
     orchestrator.run(context)

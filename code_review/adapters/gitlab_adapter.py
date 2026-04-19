@@ -83,4 +83,15 @@ class GitLabAdapter(CommonAdapter):
             raise RuntimeError(f"GitLab comment error: {resp.status_code} {resp.text}")
 
     def post_summary(self, summary: str) -> None:
-        self.post_comment(f"## Summary\n\n{summary}")
+        payload = {
+            "body": f"## 🤖 AI Code Review Summary\n\n{summary}",
+        }
+        resp = requests.post(
+            self._notes_url,
+            headers=self._headers,
+            data=json.dumps(payload),
+        )
+        if resp.status_code not in (200, 201):
+            raise RuntimeError(
+                f"GitLab summary error: {resp.status_code} {resp.text}"
+            )

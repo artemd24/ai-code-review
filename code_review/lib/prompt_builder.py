@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional, Tuple
 
 
 class PromptAdvancementLevel(str, Enum):
@@ -11,8 +12,17 @@ class PromptBuilder:
     def __init__(self, level: PromptAdvancementLevel):
         self.level = level
 
-    def get_prompt(self, payload):
-        return """SYSTEM: Ты — опытный senior-инженер, делающий code review в продакшн-проекте.
+    def get_prompt(self, payload: str, batch: Optional[Tuple[int, int]] = None) -> str:
+        batch_note = ""
+        if batch is not None:
+            i, n = batch
+            batch_note = (
+                f"\n\nВАЖНО: Это часть {i} из {n} общего diff. Комментируй только проблемы в этом фрагменте. "
+                "В summary кратко опиши находки по этому фрагменту (полный MR может содержать больше изменений).\n"
+            )
+
+        return (
+            """SYSTEM: Ты — опытный senior-инженер, делающий code review в продакшн-проекте.
         Тебе передан git diff с изменениями в коде. 
         Твоя задача — помочь автору изменений:
         - найти логические ошибки, потенциальные баги и опасные corner cases;
@@ -50,5 +60,11 @@ class PromptBuilder:
         Сформируй ответ строго в указанном JSON-формате, без дополнительного текста и без Markdown-блоков вокруг JSON.
         
         Ниже diff, который нужно проанализировать:
-        
-        === BEGIN DIFF ===\n""" + payload + "\n=== END DIFF ==="
+        """
+            + batch_note
+            + """
+        === BEGIN DIFF ===
+"""
+            + payload
+            + "\n=== END DIFF ==="
+        )
