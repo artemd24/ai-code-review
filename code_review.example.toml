@@ -1,0 +1,25 @@
+# Пример конфигурации для `python main.py --config code_review.example.toml ...`
+# CLI-аргументы переопределяют значения из файла.
+
+adapter = "local"
+model = "qwen3"
+level = "FULL"
+api_key = "env:OPENROUTER_API_KEY"
+
+# Лимит токенов на один запрос с текстом diff (необязательно; иначе считается из контекста модели).
+# max_diff_tokens = 90000
+
+[local]
+source = "feature-branch"
+target = "main"
+output = "review.md"
+
+# Пример для GitHub Pull Request (owner/repo, номер PR, токен с правами на PR/repo):
+# adapter = "github"
+# model = "qwen3"
+# api_key = "env:OPENROUTER_API_KEY"
+# token = "env:GITHUB_TOKEN"
+#
+# [github]
+# repo = "octocat/Hello-World"
+# pr = 123
